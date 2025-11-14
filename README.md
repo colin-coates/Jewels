@@ -1,3 +1,4 @@
+[![Deploy ▶](https://img.shields.io/badge/Deploy-%E2%96%B6%EF%B8%8F-blue?style=flat-square)](https://github.com/colin-coates/Jewels/actions/workflows/autodeploy.yml)
 # Jewels AutoDeploy
 
 Containerized auto-deploy agent that can push files/configs to Azure File Share, Cloudflare, GitHub, Shopify, etc.
