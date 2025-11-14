@@ -1,0 +1,48 @@
+# Auto-deploy Python Azure Function on push to main or manual trigger
+# Requires these repo secrets to be set:
+# - AZURE_CREDENTIALS  (the azure sdk-auth JSON)
+# - AZURE_WEBAPP_NAME  (the Function App name, e.g. jewels-webhook-func)
+# Optional: AZURE_RESOURCE_GROUP and AZURE_SUBSCRIPTION_ID if you want them available
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    name: Build and deploy to Azure Function
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies (if requirements.txt exists)
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt --upgrade --target ./package; fi
+
+      - name: Archive app for deployment
+        run: |
+          if [ -d package ]; then
+            cp -R package/* .
+            zip -r functionapp.zip . -x .git\* -x .github\*
+          else
+            zip -r functionapp.zip . -x .git\* -x .github\*
+          fi
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to Azure Function App (zip deploy)
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+          package: functionapp.zip
