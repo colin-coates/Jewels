@@ -31,5 +31,9 @@ Secrets to add to the repo (Settings → Secrets → Actions)
 Security note
 - Use AZURE_CREDENTIALS with least privilege (scoped to the RG if you create it).
 - Avoid storing account keys in repo files. Use secrets or SAS tokens.
+<<<<<<< HEAD
+# (paste the README markdown snippet from the README.md file block above)
+=======
 
 <!-- autodeploy-trigger: 2025-11-16T00:40:03Z -->
+>>>>>>> origin/main
